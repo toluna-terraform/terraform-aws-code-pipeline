@@ -34,14 +34,15 @@ resource "aws_codepipeline" "codepipeline" {
       owner            = "AWS"
       provider         = "CodeStarSourceConnection"
       version          = "1"
-      output_artifacts = ["SourceArtifact"]
-      namespace        = ["SourceVariables"]
+      output_artifacts = ["source_output"]
+
 
       configuration = {
-        //ConnectionArn    = aws_codestarconnections_connection.example.arn
-        ConnectionArn    = var.connection_arn
+        ConnectionArn    = aws_codestarconnections_connection.connection.arn
+        //ConnectionArn    = var.connection_arn
         FullRepositoryId =  var.source_repository
         BranchName       = var.trigger_branch
+        OutputArtifactFormat = "CODE_ZIP"
       }
     }
   }
@@ -56,8 +57,7 @@ resource "aws_codepipeline" "codepipeline" {
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
-      input_artifacts  = ["SourceArtifact"]
-      output_artifacts = ["BuildArtifact"]
+      input_artifacts  = ["source_output"]
       version          = "1"
 
       configuration = {
@@ -69,8 +69,8 @@ resource "aws_codepipeline" "codepipeline" {
 }
 
 
-resource "aws_codestarconnections_connection" "example" {
-  name          = "example-connection"
+resource "aws_codestarconnections_connection" "connection" {
+  name          = "${var.env_name}-${local.repository_name}-connection"
   provider_type = "Bitbucket"
 }
 
@@ -125,7 +125,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       "Action": [
         "codestar-connections:UseConnection"
       ],
-      "Resource": "${aws_codestarconnections_connection.example.arn}"
+      "Resource": "${aws_codestarconnections_connection.connection.arn}"
     },
     {
       "Effect": "Allow",
