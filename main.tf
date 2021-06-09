@@ -18,11 +18,6 @@ resource "aws_codepipeline" "codepipeline" {
   artifact_store {
     location = aws_s3_bucket.codepipeline_bucket.bucket
     type     = "S3"
-
-    encryption_key {
-      id   = data.aws_kms_alias.s3kmskey.arn
-      type = "KMS"
-    }
   }
 
   stage {
@@ -38,7 +33,7 @@ resource "aws_codepipeline" "codepipeline" {
 
 
       configuration = {
-        ConnectionArn    = aws_codestarconnections_connection.connection.arn
+        ConnectionArn    = var.connection_arn
         //ConnectionArn    = var.connection_arn
         FullRepositoryId =  var.source_repository
         BranchName       = var.trigger_branch
@@ -125,7 +120,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       "Action": [
         "codestar-connections:UseConnection"
       ],
-      "Resource": "${aws_codestarconnections_connection.connection.arn}"
+      "Resource": "*"
     },
     {
       "Effect": "Allow",
@@ -140,7 +135,4 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
 EOF
 }
 
-data "aws_kms_alias" "s3kmskey" {
-  name = "alias/myKmsKey"
-}
 
