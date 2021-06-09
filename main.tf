@@ -7,8 +7,7 @@ locals {
     repository_name = split("/",var.source_repository)[1]
     artifacts_bucket_name = "s3-codepipeline-${var.env_name}-${local.repository_name}"
     codepipeline_name = "codepipeline-${var.env_name}-${local.repository_name}"
-    // The "connection_arn" will be replaced with: "aws_codestarconnections_connection.example.arn" after tests.
-    connection_arn = "arn:aws:codestar-connections:us-west-2:080660034022:connection/a34c159c-b9cb-43be-b110-7b7ce8e244da"
+    
 
 }
 
@@ -39,7 +38,7 @@ resource "aws_codepipeline" "codepipeline" {
 
       configuration = {
         //ConnectionArn    = aws_codestarconnections_connection.example.arn
-        ConnectionArn    = local.connection_arn
+        ConnectionArn    = var.connection_arn
         FullRepositoryId =  var.source_repository
         BranchName       = var.trigger_branch
       }
@@ -59,7 +58,7 @@ resource "aws_codepipeline" "codepipeline" {
       version          = "1"
 
       configuration = {
-        ProjectName = var.builds_stages[0]
+        ProjectName = var.build_stage
       }
     }
   }
@@ -77,7 +76,7 @@ resource "aws_s3_bucket" "codepipeline_bucket" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name = "test-role"
+  name = "${local.codepipeline_name}-role"
 
   assume_role_policy = <<EOF
 {
