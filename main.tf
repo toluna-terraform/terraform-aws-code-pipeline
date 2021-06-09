@@ -48,18 +48,20 @@ resource "aws_codepipeline" "codepipeline" {
   stage {
     name = "Build"
 
-    action {
-      name             = "Build"
+    dynamic "action" {
+    for_each = var.code_build_projects 
+    content {
+      name             = action.value
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output"]
       version          = "1"
 
       configuration = {
-        ProjectName = var.build_stage
+        ProjectName = action.value
       }
+    }
     }
   }
 }
