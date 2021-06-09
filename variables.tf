@@ -35,5 +35,5 @@ default = ["codebuild-test-devops-chorus","infra-pipeline-test"]
 
 variable "connection_arn" {
 type = string
-default = "arn:aws:codestar-connections:us-west-2:080660034022:connection/a34c159c-b9cb-43be-b110-7b7ce8e244da"
+default = "arn:aws:codestar-connections:us-east-1:080660034022:connection/cdd51dce-e90b-4d61-b14d-9b808564646c"
 }
