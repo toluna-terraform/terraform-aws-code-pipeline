@@ -1,8 +1,3 @@
-provider "aws" {
-    region = var.aws_region
-    profile = var.aws_profile
-}
-
 locals {
     repository_name = split("/",var.source_repository)[1]
     artifacts_bucket_name = "s3-codepipeline-${var.env_name}-${local.repository_name}"
