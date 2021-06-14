@@ -1,25 +1,23 @@
 variable "env_name" {
-type = string
+    type = string
 }
 
 variable "source_repository" {
-type = string
+    type = string
 }
 
 variable "trigger_branch" {
-type = string
-default = "develop"
+    type = string
 }
 
 variable "trigger_events" {
-type = list(string)
-default = ["push","merge"]
+    type = list(string) 
 }
 
 variable "code_build_projects" {
-type = list(string)
+    type = list(string)
 }
 
-variable "connection_arn" {
-type = string
+variable "s3_bucket" {
+    type = string
 }

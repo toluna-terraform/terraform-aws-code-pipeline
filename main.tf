@@ -2,8 +2,6 @@ locals {
     repository_name = split("/",var.source_repository)[1]
     artifacts_bucket_name = "s3-codepipeline-${var.env_name}-${local.repository_name}"
     codepipeline_name = "codepipeline-${var.env_name}-${local.repository_name}"
-    
-
 }
 
 resource "aws_codepipeline" "codepipeline" {
@@ -11,7 +9,7 @@ resource "aws_codepipeline" "codepipeline" {
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
-    location = aws_s3_bucket.codepipeline_bucket.bucket
+    location = var.s3_bucket
     type     = "S3"
   }
 
@@ -28,8 +26,7 @@ resource "aws_codepipeline" "codepipeline" {
 
 
       configuration = {
-        ConnectionArn    = var.connection_arn
-        //ConnectionArn    = var.connection_arn
+        ConnectionArn    = data.aws_ssm_parameter.codepipeline_connection_arn.value
         FullRepositoryId =  var.source_repository
         BranchName       = var.trigger_branch
         OutputArtifactFormat = "CODE_ZIP"
@@ -59,75 +56,15 @@ resource "aws_codepipeline" "codepipeline" {
 }
 
 
-resource "aws_codestarconnections_connection" "connection" {
-  name          = "${var.env_name}-${local.repository_name}-connection"
-  provider_type = "Bitbucket"
-}
-
-resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = local.artifacts_bucket_name
-  acl    = "private"
-}
 
 resource "aws_iam_role" "codepipeline_role" {
   name = "${local.codepipeline_name}-role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "codepipeline.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
+  assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role_policy.json
 }
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
   name = "codepipeline_policy"
   role = aws_iam_role.codepipeline_role.id
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect":"Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:GetObjectVersion",
-        "s3:GetBucketVersioning",
-        "s3:PutObjectAcl",
-        "s3:PutObject"
-      ],
-      "Resource": [
-        "${aws_s3_bucket.codepipeline_bucket.arn}",
-        "${aws_s3_bucket.codepipeline_bucket.arn}/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "codestar-connections:UseConnection"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "codebuild:BatchGetBuilds",
-        "codebuild:StartBuild"
-      ],
-      "Resource": "*"
-    }
-  ]
+  policy = data.aws_iam_policy_document.codepipeline_role_policy.json
 }
-EOF
-}
-
 
