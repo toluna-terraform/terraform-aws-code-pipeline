@@ -24,7 +24,6 @@ resource "aws_codepipeline" "codepipeline" {
       version          = "1"
       output_artifacts = ["source_output"]
 
-
       configuration = {
         ConnectionArn    = data.aws_ssm_parameter.codepipeline_connection_arn.value
         FullRepositoryId =  var.source_repository

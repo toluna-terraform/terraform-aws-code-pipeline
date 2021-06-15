@@ -3,7 +3,7 @@ data "aws_s3_bucket" "codepipeline_bucket" {
 }
 
 data "aws_ssm_parameter" "codepipeline_connection_arn" {
-  name = "codepipeline_connection_arn"
+  name = "/infra/codepipeline/connection_arn"
 }
 
 data "aws_iam_policy_document" "codepipeline_assume_role_policy" {
