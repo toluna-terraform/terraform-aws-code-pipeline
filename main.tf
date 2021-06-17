@@ -45,10 +45,12 @@ resource "aws_codepipeline" "codepipeline" {
       provider         = "CodeBuild"
       input_artifacts  = ["source_output"]
       version          = "1"
+      output_artifacts = ["build_output"]
 
       configuration = {
         ProjectName = action.value
       }
+
     }
     }
   }
