@@ -1,5 +1,5 @@
 # terraform-aws-code-pipeline
-Toluna [Terraform module](https://registry.terraform.io/modules/toluna-terraform/code-pipeline/aws/latest), which creates AWS CodePipeline.
+Toluna [Terraform module](https://registry.terraform.io/modules/toluna-terraform/code-pipeline/aws/latest), which creates AWS CodePipeline resources.
 
 ## Requirements
 Before you start using this module, please validate you already created:
