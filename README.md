@@ -4,7 +4,7 @@ Toluna [Terraform module](https://registry.terraform.io/modules/toluna-terraform
 ## Requirements
 Before you start using this module, please validate you already created:
 - A connection (CodeStar connection).
-- An SSM parameter named "codepipeline_connection_arn" which contains the Connection ARN as value.
+- An SSM parameter named "/infra/codepipeline/connection_arn" which contains the Connection ARN as value.
 - S3 bucket for the pipeline artifacts.
 
 ## Usage
