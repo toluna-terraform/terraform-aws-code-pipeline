@@ -41,4 +41,15 @@ data "aws_iam_policy_document" "codepipeline_role_policy" {
         ]
     resources = ["*"]
   }
+  statement {
+      actions = [
+        "codedeploy:CreateDeployment",
+        "codedeploy:GetApplicationRevision",
+        "codedeploy:GetApplication",
+        "codedeploy:GetDeployment",
+        "codedeploy:GetDeploymentConfig",
+        "codedeploy:RegisterApplicationRevision"
+      ]
+      resources = ["*"]
+  }
 }
