@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "codepipeline_assume_role_policy" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
-      identifiers = ["codepipeline.amazonaws.com"]
+      identifiers = ["codepipeline.amazonaws.com", "codedeploy.amazonaws.com"]
     }
   }
 }
@@ -44,12 +44,38 @@ data "aws_iam_policy_document" "codepipeline_role_policy" {
 
   statement {
     actions = [
-      "codedeploy:CreateDeployment",
-      "codedeploy:GetApplicationRevision",
-      "codedeploy:GetDeployment",
-      "codedeploy:GetDeploymentConfig",
-      "codedeploy:RegisterApplicationRevision"
+      "codedeploy:*"
+      # "codedeploy:CreateDeployment",
+      # "codedeploy:GetApplicationRevision",
+      # "codedeploy:GetDeployment",
+      # "codedeploy:GetDeploymentConfig",
+      # "codedeploy:RegisterApplicationRevision"
     ]
     resources = ["*"]
+  }
+
+  statement {
+    actions   = [
+            "ecs:*"
+        ]
+    # TODO: replace with ecs arn
+    resources = ["*"]
+  }
+  statement {
+    actions   = ["iam:PassRole"]
+    resources = [
+        "arn:aws:iam::*:role/role-ecs-chorus-${var.env_name}",
+        "arn:aws:iam::*:role/role-ecs-xray-chorus-${var.env_name}"
+        ]
+  }
+
+  statement {
+    actions   = ["iam:PassRole"]
+    resources = ["*"]
+    condition {
+      test = "StringEqualsIfExists"
+      variable = "iam:PassedToService"
+      values = ["ecs-tasks.amazonaws.com"]
+    }
   }
 }
