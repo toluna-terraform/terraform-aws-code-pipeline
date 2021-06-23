@@ -18,6 +18,10 @@ variable "code_build_projects" {
     type = list(string)
 }
 
+variable "code_deploy_applications" {
+    type = list(string)
+}
+
 variable "s3_bucket" {
     type = string
 }
