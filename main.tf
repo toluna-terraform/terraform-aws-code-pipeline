@@ -71,6 +71,7 @@ resource "aws_codepipeline" "codepipeline" {
           DeploymentGroupName = "${action.value}-group"
           TaskDefinitionTemplateArtifact = "build_output"
           AppSpecTemplateArtifact = "build_output"
+          AppSpecTemplatePath = "appspec.json"
           
         }
       }
