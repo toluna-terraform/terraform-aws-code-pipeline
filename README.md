@@ -20,4 +20,4 @@ module "code-pipeline" {
   trigger_events      = ["push", "merge"] // The events that will trigger this pipeline.
 }
 ```
-
+test
